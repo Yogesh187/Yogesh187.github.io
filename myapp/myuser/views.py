@@ -44,11 +44,33 @@ class LoginAPIView(APIView):
             if user.check_password(password):
                 user.is_login = True
                 user.save()
-                return Response({"message": "Login successful"}, status=status.HTTP_200_OK)
+                return Response({
+                    "message": "Login successful",
+                    "uuid": str(user.uuid)
+                    }, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
         except MyUser.DoesNotExist:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+
+
+class LogoutAPIView(APIView):
+    def post(self,request):
+        uuid = request.data.get("uuid")
+
+        if not uuid:
+            return Response({"error": "UUID is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = MyUser.objects.get(uuid=uuid)
+        except MyUser.DoesNotExist:
+            return Response({"error": "Invalid UUID"}, status=status.HTTP_404_NOT_FOUND)
+        
+        user.is_login = False
+        user.save()
+        return Response({"message": "Logout successful"}, status=status.HTTP_200_OK)
 
 
