@@ -1,19 +1,42 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [agreeToTerms, setAgreeToterms] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
 
+  // Handle input changes and update formData
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    try {
+      await axios.post("http://127.0.0.1:8000/api/users/login/", formData);
+      // alert("Login successfully!");
+      window.location.href = "/Pages/IMEI";
+      setFormData({ email: "", password: "" });
+    } catch (error) {
+      console.error("Login unsuccessful", error);
+      // alert("Login unsuccessful");
+    }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-      <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%", borderRadius: "8px" }}>
+    <div
+      className="container d-flex justify-content-center align-items-center"
+      style={{ minHeight: "100vh" }}
+    >
+      <div
+        className="card p-4 shadow"
+        style={{ maxWidth: "400px", width: "100%", borderRadius: "8px" }}
+      >
         <h2 className="text-center mb-4 text-primary">Login</h2>
 
         <form onSubmit={handleSubmit}>
@@ -23,37 +46,30 @@ const Login = () => {
               type="text"
               className="form-control form-control-lg"
               placeholder="Enter your Email"
+              name="email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
             />
           </div>
 
           {/* Password Input */}
           <div className="mb-3">
             <input
-              type="tel"
+              type="password"
               className="form-control form-control-lg"
               placeholder="Enter your Password"
+              name="password"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
             />
           </div>
-          <div>
-            <input
-              type="checkbox"
-              className="form-check-input"
-              name="agreeToTerms"
-              onChange={(e) => setAgreeToterms(e.target.value)}
-            />
-            <label className="form-check-label">I agree with terms and conditions</label>
-      
-          </div>
-
 
           {/* Message Display */}
-          {message && <div className={`text-center text-${messageType}`}>{message}</div>}
+          {message && (
+            <div className={`text-center text-${messageType}`}>{message}</div>
+          )}
 
           {/* Login Button */}
           <button type="submit" className="btn btn-primary w-100 py-2">
@@ -64,11 +80,14 @@ const Login = () => {
         {/* Sign Up Link */}
         <div className="text-center mt-3">
           <p>
-            Don't have an account? <a href="/Pages/Register" className="text-primary">Sign Up</a>
+            Don't have an account?{" "}
+            <a href="/Pages/Register" className="text-primary">
+              Sign Up
+            </a>
           </p>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 
