@@ -18,9 +18,14 @@ function Navbar() {
   };
 
   return (
-    <nav className="navbar navbar-expand-sm navbar-dark bg-dark border-bottom mb-3">
+    <nav className="navbar navbar-expand-sm navbar-dark bg-dark border-bottom">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
+        <img 
+            src="/logo.png"  // Replace with your logo path
+            alt="Logo"
+            style={{ height: "30px", marginRight: "8px" }} 
+          />
           INNS 
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">

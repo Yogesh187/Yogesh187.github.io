@@ -9,6 +9,9 @@ import Login from './Pages/Login';
 import HomePage from './Pages/Home';
 import Register from './Pages/Register';
 import Navbar from './Components/Navbar';
+import { IMEI, IMEIFinder } from './Pages/IMEI';
+import { IMSIFinder } from './Pages/IMSI';
+import { SimFinder } from './Pages/SIM';
 
 
 
@@ -21,6 +24,9 @@ function App() {
           <Route path="/" element={<HomePage/>} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Pages/Register" element={<Register />} />
+          <Route path="/Pages/IMSI" element={<IMSIFinder/>}/>
+          <Route path="/Pages/IMEI" element = {<IMEIFinder/>}/>
+          <Route path="/Pages/SIM" element = {<SimFinder/>}/>
         </Routes>
       </Router>
     </>

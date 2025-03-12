@@ -1,20 +1,55 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [agreeToTerms, setAgreeToterms] = useState("");
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState("");
+  const [formData, setFormData] = useState({
+    eMail: "",
+    password: "",
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    try {
+      await axios.post("http://127.0.0.1:8000/api/users/login/", formData);
+      alert("Login successfully!");
+      window.location.href = "/Pages/IMEI";
+      setFormData({ eMail: "", password: "" });
+    } catch (error) {
+      console.error("Login unsuccessful", error);
+      alert("Login unsuccessful");
+    }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
-      <div className="card p-4 shadow" style={{ maxWidth: "400px", width: "100%", borderRadius: "8px" }}>
-        <h2 className="text-center mb-4 text-primary">Login</h2>
+    <div
+      className="container-fluid d-flex align-items-center"
+      style={{
+        height:"90vh",
+        overflow:"hidden",
+        backgroundImage: "url('/loginPage.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        position: "relative",
+      }}
+    >
+      {/* Enhanced Glassmorphism Login Card */}
+      <div
+        className="p-4 shadow-lg ms-auto me-5"
+        style={{
+          maxWidth: "400px",
+          width: "100%",
+          borderRadius: "12px",
+          backdropFilter: "blur(10px)", // Blurred background effect
+          background: "rgba(255, 255, 255, 0.15)", // Semi-transparent white
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)", // Soft shadow for depth
+          border: "2px solid rgba(255, 255, 255, 0.3)", // Subtle border
+          padding: "30px",
+        }}
+      >
+        <h2 className="text-center mb-4 text-light" style={{ textShadow: "1px 1px 3px rgba(0,0,0,0.5)" }}>
+          Login
+        </h2>
 
         <form onSubmit={handleSubmit}>
           {/* Email Input */}
@@ -24,51 +59,62 @@ const Login = () => {
               className="form-control form-control-lg"
               placeholder="Enter your Email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.eMail}
+              onChange={(e) => setFormData({ ...formData, eMail: e.target.value })}
+              style={{
+                background: "rgba(255, 255, 255, 0.2)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                padding: "12px",
+              }}
             />
           </div>
 
           {/* Password Input */}
           <div className="mb-3">
             <input
-              type="tel"
+              type="password"
               className="form-control form-control-lg"
               placeholder="Enter your Password"
               required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              style={{
+                background: "rgba(255, 255, 255, 0.2)",
+                color: "#fff",
+                border: "none",
+                borderRadius: "8px",
+                padding: "12px",
+              }}
             />
           </div>
-          <div>
-            <input
-              type="checkbox"
-              className="form-check-input"
-              name="agreeToTerms"
-              onChange={(e) => setAgreeToterms(e.target.value)}
-            />
-            <label className="form-check-label">I agree with terms and conditions</label>
-      
-          </div>
-
-
-          {/* Message Display */}
-          {message && <div className={`text-center text-${messageType}`}>{message}</div>}
 
           {/* Login Button */}
-          <button type="submit" className="btn btn-primary w-100 py-2">
+          <button
+            type="submit"
+            className="btn w-100 py-2"
+            style={{
+              background: "linear-gradient(135deg, #6a11cb, #2575fc)",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+            }}
+          >
             Login
           </button>
         </form>
 
         {/* Sign Up Link */}
         <div className="text-center mt-3">
-          <p>
-            Don't have an account? <a href="/Pages/Register" className="text-primary">Sign Up</a>
+          <p className="text-light">
+            Don't have an account? <a href="/Pages/Register" className="text-warning">Sign Up</a>
           </p>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 
