@@ -7,6 +7,12 @@ const Login = () => {
     password: "",
   });
 
+  // Handle input changes and update formData
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -58,6 +64,7 @@ const Login = () => {
               type="text"
               className="form-control form-control-lg"
               placeholder="Enter your Email"
+              name="email"
               required
               value={formData.eMail}
               onChange={(e) => setFormData({ ...formData, eMail: e.target.value })}
@@ -75,9 +82,6 @@ const Login = () => {
           <div className="mb-3">
             <input
               type="password"
-              className="form-control form-control-lg"
-              placeholder="Enter your Password"
-              required
               value={formData.password}
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               style={{
