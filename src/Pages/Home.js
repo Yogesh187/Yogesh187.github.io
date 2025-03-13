@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaDollarSign, FaSimCard } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("IsLoggedIn") == "true");
 
   return (
     <div className="container my-5" style={{ position: 'relative', objectFit: 'cover' }}>
@@ -20,9 +21,12 @@ const HomePage = () => {
         <div>
           <h1 className="display-4">International Numbering Plans</h1>
           <p className="lead">Your one-stop solution for all service!</p>
-          <a href="/Login" className="btn btn-light btn-lg mt-3">
+          {!isLoggedIn ? <a href="/Login" className="btn btn-light btn-lg mt-3">
             Login
-          </a>
+          </a> : <a href="/Pages/Tacfinder" className="btn btn-light btn-lg mt-3">
+            Explore
+          </a>}
+
         </div>
       </div>
 
@@ -30,7 +34,7 @@ const HomePage = () => {
       <section id="why-choose-us" className="my-5">
         {/* <h2 className="text-center mb-4">Why Choose Us?</h2> */}
         <div className="row text-center">
-          <div className="col-md-4 mb-4">
+          <div className="col-6 mb-4">
             <div className="card shadow-sm" onClick={() => navigate("/Pages/IMEI")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaMagnifyingGlass className="fa-3x text-primary mb-3" />
@@ -39,7 +43,7 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-4 mb-4">
+          <div className="col-6 mb-4">
             <div className="card shadow-sm" onClick={() => navigate("/Pages/IMSI")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaDollarSign className="fa-3x text-primary mb-3" />
@@ -48,11 +52,20 @@ const HomePage = () => {
               </div>
             </div>
           </div>
-          <div className="col-md-4 mb-4">
+          <div className="col-6 mb-4">
             <div className="card shadow-sm" onClick={() => navigate("/Pages/SIM")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
                 <h4 className="card-title">SIM Finder</h4>
+                <p className="card-text">Simplest way to find your SIM by number.</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-6 mb-4">
+            <div className="card shadow-sm" onClick={() => navigate("/Pages/Tacfinder")} style={{ cursor: "pointer" }}>
+              <div className="card-body">
+                <FaSimCard className="fa-3x text-primary mb-3" />
+                <h4 className="card-title">TAC Finder</h4>
                 <p className="card-text">Simplest way to find your SIM by number.</p>
               </div>
             </div>

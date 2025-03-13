@@ -2,18 +2,18 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Navbar() {
-  const [role, setRole] = useState(localStorage.getItem("role"));
-  const [user, setUser] = useState(localStorage.getItem("username"));
+  const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem("IsLoggedIn") == "true");
+  const [user, setUser] = useState(localStorage.getItem("User"));
 
   useEffect(() => {
-    setRole(localStorage.getItem("role"));
-    setUser(localStorage.getItem("username"));
+    setIsLoggedIn(localStorage.getItem("IsLoggedIn") == "true");
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("role");
-    localStorage.removeItem("username");
+    localStorage.removeItem("IsLoggedIn");
+    localStorage.removeItem("User");
     alert("Logged out successfully!");
+    setIsLoggedIn(false);
     window.location.href = "/";
   };
 
@@ -21,12 +21,12 @@ function Navbar() {
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark border-bottom">
       <div className="container-fluid">
         <Link className="navbar-brand" to="/">
-        <img 
-            src="/logo.png"  // Replace with your logo path
+          <img
+            src="/logo.png"
             alt="Logo"
-            style={{ height: "30px", marginRight: "8px" }} 
+            style={{ height: "30px", marginRight: "8px" }}
           />
-          INNS 
+          INNS
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
           <span className="navbar-toggler-icon"></span>
@@ -38,30 +38,29 @@ function Navbar() {
                 <i className="fa fa-home me-2"></i>Home
               </Link>
             </li>
-            {role === "admin" && (
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/products">
-                  <i className="fa fa-shopping-cart me-2"></i>Products
-                </Link>
-              </li>
-            )}
-            {role === "user" && (
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/products">
-                  <i className="fa fa-cubes me-2"></i>Products
-                </Link>
-              </li>
-            )}
-            {role === "user" && (
-              <li className="nav-item">
-                <Link className="nav-link text-white" to="/cart">
-                  <i className="fa fa-shopping-cart me-2"></i>Add to cart
-                </Link>
-              </li>
-            )}
+            <li className="nav-item">
+              <Link className="nav-link text-white" to="/Pages/Tacfinder">
+                <i className="fa fa-search me-2"></i>Tac Finder
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-white" to="/Pages/LuhnCheck">
+                <i className="fa fa-check me-2"></i>Luhn Check
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-white" to="/Pages/CountryCode">
+                <i className="fa fa-globe me-2"></i>CountryCode
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link text-white" to="/Pages/PhoneNumberFind">
+                <i className="fa fa-phone me-2"></i>Phone Number
+              </Link>
+            </li>
           </ul>
           <ul className="navbar-nav">
-            {role ? (
+            {isLoggedIn ? (
               <>
                 <li className="nav-item">
                   <button className="btn btn-dark">

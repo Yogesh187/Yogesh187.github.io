@@ -7,6 +7,7 @@ const Login = () => {
     password: "",
   });
 
+  // localStorage.setItem("IsLoggedIn", false);
   // Handle input changes and update formData
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,9 +17,11 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post("http://127.0.0.1:8000/api/users/login/", formData);
+      // await axios.post("http://127.0.0.1:8000/api/users/login/", formData);
+      localStorage.setItem("IsLoggedIn", "true");
+      localStorage.setItem("User", formData.eMail);
       alert("Login successfully!");
-      window.location.href = "/Pages/IMEI";
+      window.location.href = "/";
       setFormData({ eMail: "", password: "" });
     } catch (error) {
       console.error("Login unsuccessful", error);
@@ -30,8 +33,8 @@ const Login = () => {
     <div
       className="container-fluid d-flex align-items-center"
       style={{
-        height:"90vh",
-        overflow:"hidden",
+        height: "90vh",
+        overflow: "hidden",
         backgroundImage: "url('/loginPage.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -83,6 +86,8 @@ const Login = () => {
             <input
               type="password"
               value={formData.password}
+              placeholder="Enter your password"
+              className="form-control form-control-lg"
               onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               style={{
                 background: "rgba(255, 255, 255, 0.2)",
