@@ -11,7 +11,7 @@ class RegisterAPIView(APIView):
         phone_number = request.data.get("phone_number")
         password = request.data.get("password")
 
-        if not name or not email or not phone_number or not password:
+        if not name or not password:
             return Response({"error": "All fields are required"}, status=status.HTTP_400_BAD_REQUEST)
 
         if MyUser.objects.filter(email=email).exists():
