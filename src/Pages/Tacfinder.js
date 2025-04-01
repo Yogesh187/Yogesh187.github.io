@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+
 export const TacFinder = () => {
   const [imei, setImei] = useState("");
   const [tac, setTac] = useState("");
+
 
   const handleInputChange = (e) => {
     const value = e.target.value;
@@ -12,6 +14,7 @@ export const TacFinder = () => {
     }
   };
 
+
   const extractTAC = () => {
     if (imei.length !== 15) {
       setTac("Invalid IMEI");
@@ -19,6 +22,7 @@ export const TacFinder = () => {
       setTac(imei.substring(0, 8));
     }
   };
+
 
   return (
     <div className="container mt-5">
@@ -51,3 +55,4 @@ export const TacFinder = () => {
     </div>
   );
 };
+

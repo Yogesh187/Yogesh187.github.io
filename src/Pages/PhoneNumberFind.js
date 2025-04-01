@@ -2,18 +2,21 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import mobileData from "../Data/mobile_number_info.json"; // Ensure this file has the correct data
 
+
 const PhoneNumberFinder = () => {
     const [mobileNumber, setMobileNumber] = useState("");
     const [result, setResult] = useState(null);
     const [searched, setSearched] = useState(false); // Track search button click
 
+
     const handleSearch = () => {
         setSearched(true); // Mark that search has been performed
-        const foundEntry = mobileData.find((item) => 
+        const foundEntry = mobileData.find((item) =>
             mobileNumber.startsWith(item["Mobile Prefix"])
         );
         setResult(foundEntry || null);
     };
+
 
     return (
         <div className="container mt-5">
@@ -31,6 +34,7 @@ const PhoneNumberFinder = () => {
                         Search
                     </button>
                 </div>
+
 
                 {searched && (
                     result ? (
@@ -58,5 +62,6 @@ const PhoneNumberFinder = () => {
         </div>
     );
 };
+
 
 export default PhoneNumberFinder;

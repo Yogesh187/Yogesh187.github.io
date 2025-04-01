@@ -2,13 +2,22 @@ import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css"; // Import Bootstrap
 import cCode from "../Data/extended_country_phone_codes.json";
 
+
 const CountryCode = () => {
     const [search, setSearch] = useState("");
 
+
     // Filter countries that start with the input
+    // const filteredCountries = cCode.filter(
+    //     (item) => item["country"].toLowerCase().startsWith(search.toLowerCase())
+    // );
     const filteredCountries = cCode.filter(
-        (item) => item["Country"].toLowerCase().startsWith(search.toLowerCase())
+        (item) =>
+            item["country"].toLowerCase().startsWith(search.toLowerCase()) ||
+            item["country_code"].toString().startsWith(search)
     );
+   
+
 
     return (
         <div className="container mt-5">
@@ -24,6 +33,7 @@ const CountryCode = () => {
                     />
                 </div>
 
+
                 {search && (
                     <div className="table-responsive">
                         {filteredCountries.length > 0 ? (
@@ -32,15 +42,19 @@ const CountryCode = () => {
                                     <tr>
                                         <th>Country</th>
                                         <th>Country Code</th>
+                                        <th>MCC</th>
+                                        <th>MNC</th>
                                         <th>ISO Code</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredCountries.map((result,index) => (
                                         <tr key={index}>
-                                            <td>{result["Country"]}</td>
-                                            <td>{result["country Code"]}</td>
-                                            <td>{result["ISO Code"]}</td>
+                                            <td>{result.country}</td>
+                                            <td>{result.country_code}</td>
+                                            <td>{result.mcc}</td>
+                                            <td>{result.mnc}</td>
+                                            <td>{result.iso.toUpperCase()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -54,5 +68,6 @@ const CountryCode = () => {
         </div>
     );
 };
+
 
 export default CountryCode;

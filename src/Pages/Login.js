@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+
 const Login = () => {
   const [formData, setFormData] = useState({
     eMail: "",
     password: "",
   });
+
 
   // localStorage.setItem("IsLoggedIn", false);
   // Handle input changes and update formData
@@ -14,13 +16,14 @@ const Login = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
       // await axios.post("http://127.0.0.1:8000/api/users/login/", formData);
       localStorage.setItem("IsLoggedIn", "true");
       localStorage.setItem("User", formData.eMail);
-      alert("Login successfully!");
+      // alert("Login successfully!");
       window.location.href = "/";
       setFormData({ eMail: "", password: "" });
     } catch (error) {
@@ -28,6 +31,7 @@ const Login = () => {
       alert("Login unsuccessful");
     }
   };
+
 
   return (
     <div
@@ -60,6 +64,7 @@ const Login = () => {
           Login
         </h2>
 
+
         <form onSubmit={handleSubmit}>
           {/* Email Input */}
           <div className="mb-3">
@@ -81,6 +86,7 @@ const Login = () => {
             />
           </div>
 
+
           {/* Password Input */}
           <div className="mb-3">
             <input
@@ -99,6 +105,7 @@ const Login = () => {
             />
           </div>
 
+
           {/* Login Button */}
           <button
             type="submit"
@@ -116,6 +123,7 @@ const Login = () => {
           </button>
         </form>
 
+
         {/* Sign Up Link */}
         <div className="text-center mt-3">
           <p className="text-light">
@@ -126,5 +134,6 @@ const Login = () => {
     </div>
   );
 };
+
 
 export default Login;
