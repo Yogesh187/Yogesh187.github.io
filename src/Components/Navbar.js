@@ -145,12 +145,18 @@ function Navbar() {
               </Link>
             </li>
 
+            <li className="nav-item">
+              <Link className="nav-link text-white" to="/Pages/PhoneNumberFind">
+                <i className="fa fa-globe me-2"></i>phone number
+              </Link>
+            </li>
+
             {/* 🔽 Phone Number Dropdown Starts Here */}
-            <li className="nav-item dropdown">
-              <Link className="nav-link dropdown-toggle text-white" to="#" id="phoneNumberDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <li className="nav-item">
+              <Link className="nav-link text-white" to="#" id="phoneNumberDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i className="fa fa-phone me-2"></i>Phone Number
               </Link>
-              <ul className="dropdown-menu" aria-labelledby="phoneNumberDropdown">
+              {/* <ul className="dropdown-menu" aria-labelledby="phoneNumberDropdown">
                 <li>
                   <Link className="dropdown-item" to="/Pages/PhoneNumberFind">Find Phone Number</Link>
                 </li>
@@ -163,7 +169,7 @@ function Navbar() {
                 <li>
                   <Link className="dropdown-item" to="/Pages/SpamCheck">Spam Check</Link>
                 </li>
-              </ul>
+              </ul> */}
             </li>
             {/* 🔼 Phone Number Dropdown Ends Here */}
 

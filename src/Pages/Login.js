@@ -4,7 +4,7 @@ import axios from "axios";
 
 const Login = () => {
   const [formData, setFormData] = useState({
-    eMail: "",
+    name: "",
     password: "",
   });
 
@@ -20,12 +20,12 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // await axios.post("http://127.0.0.1:8000/api/users/login/", formData);
+      await axios.post("http://127.0.0.1:8000/api/users/login/", formData);
       localStorage.setItem("IsLoggedIn", "true");
-      localStorage.setItem("User", formData.eMail);
+      localStorage.setItem("User", formData.name);
       // alert("Login successfully!");
       window.location.href = "/";
-      setFormData({ eMail: "", password: "" });
+      setFormData({ name: "", password: "" });
     } catch (error) {
       console.error("Login unsuccessful", error);
       alert("Login unsuccessful");
@@ -71,11 +71,11 @@ const Login = () => {
             <input
               type="text"
               className="form-control form-control-lg"
-              placeholder="Enter your Email"
-              name="email"
+              placeholder="Enter your username"
+              name="name"
               required
-              value={formData.eMail}
-              onChange={(e) => setFormData({ ...formData, eMail: e.target.value })}
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               style={{
                 background: "rgba(255, 255, 255, 0.2)",
                 color: "#fff",
@@ -125,11 +125,6 @@ const Login = () => {
 
 
         {/* Sign Up Link */}
-        <div className="text-center mt-3">
-          <p className="text-light">
-            Don't have an account? <a href="/Pages/Register" className="text-warning">Sign Up</a>
-          </p>
-        </div>
       </div>
     </div>
   );
