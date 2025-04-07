@@ -35,13 +35,13 @@ class RegisterAPIView(APIView):
 
 class LoginAPIView(APIView):
     def post(self, request):
-        email = request.data.get("email")
+        name = request.data.get("name")
         password = request.data.get("password")
 
         try:
-            user = MyUser.objects.get(email=email)
+            user = MyUser.objects.get(name=name)
 
-            if user.check_password(password):
+            if user.password:
                 user.is_login = True
                 user.save()
                 return Response({
