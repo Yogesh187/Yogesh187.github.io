@@ -149,18 +149,31 @@ class ICCIDAnalysisAPIView(APIView):
             return Response({"error": "Invalid ICCID format. It should be a 19 or 20 digit numeric string."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # ICCID structure: MMCC NNNN SSSSSSSS C
-            mii = iccid[:2]  # Major Industry Identifier, usually '89'
-            country_code = iccid[2:5]  # Next 2–3 digits for country (MCC)
-            network_code = iccid[5:7]  # Next 2 digits for network (MNC)
-            sequence_number = iccid[7:-1]  # Subscriber or SIM number
-            check_digit = iccid[-1]  # Last digit
+            mii = iccid[:2]
+            check_digit = iccid[-1]
+            imsi_data = None
+
+            # Try with 3-digit MCC first
+            possible_mcc = iccid[2:5]
+            possible_mnc = iccid[5:7]
+            imsi_data = IMSIRecord.objects.filter(country_code=int(possible_mcc), mnc=int(possible_mnc)).first()
+
+            if imsi_data:
+                country_code = possible_mcc
+                network_code = possible_mnc
+                sequence_number = iccid[7:-1]
+            else:
+                # Fallback to 2-digit MCC
+                possible_mcc = iccid[2:4]
+                possible_mnc = iccid[4:6]
+                imsi_data = IMSIRecord.objects.filter(country_code=int(possible_mcc), mnc=int(possible_mnc)).first()
+
+                country_code = possible_mcc
+                network_code = possible_mnc
+                sequence_number = iccid[6:-1]
 
             # Validate with Luhn
             is_valid = is_valid_luhn(iccid)
-
-            # Lookup using IMSIRecord (MCC and MNC)
-            imsi_data = IMSIRecord.objects.filter(mcc=int(country_code), mnc=int(network_code)).first()
 
             response_data = {
                 "iccid": iccid,
