@@ -7,6 +7,34 @@ from myuser.models import MyUser
 import uuid
 from .models import IMEIRecord , IMSIRecord ,ICCIDRecord
 
+# class PhoneNumberAnalysisAPIView(APIView):
+#     def post(self, request):
+#         phone_number = request.data.get("phone_number")
+
+#         if not phone_number:
+#             return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             parsed_number = phonenumbers.parse(phone_number)
+
+#             # Ensure phone number is valid
+#             if not phonenumbers.is_valid_number(parsed_number):
+#                 return Response({"error": "Invalid phone number."}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Extract country and carrier information
+#             country = geocoder.description_for_number(parsed_number, "en")
+#             carrier_name = carrier.name_for_number(parsed_number, "en")
+
+#             return Response({
+#                 "phone_number": phone_number,
+#                 "country": country,
+#                 "carrier": carrier_name
+#             }, status=status.HTTP_200_OK)
+
+#         except Exception as e:
+#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class PhoneNumberAnalysisAPIView(APIView):
     def post(self, request):
         phone_number = request.data.get("phone_number")
@@ -17,22 +45,29 @@ class PhoneNumberAnalysisAPIView(APIView):
         try:
             parsed_number = phonenumbers.parse(phone_number)
 
-            # Ensure phone number is valid
             if not phonenumbers.is_valid_number(parsed_number):
                 return Response({"error": "Invalid phone number."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Extract country and carrier information
+            # Extract components
             country = geocoder.description_for_number(parsed_number, "en")
             carrier_name = carrier.name_for_number(parsed_number, "en")
+            national_number = str(parsed_number.national_number)
+
+            # Let's assume first 3 digits of national number = network code, rest = sequence
+            network_code = national_number[:3]
+            sequence_number = national_number[3:]
 
             return Response({
                 "phone_number": phone_number,
                 "country": country,
-                "carrier": carrier_name
+                "carrier": carrier_name,
+                "network_code": network_code,
+                "sequence_number": sequence_number
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         
 
 
