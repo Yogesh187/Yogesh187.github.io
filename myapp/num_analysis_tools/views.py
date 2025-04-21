@@ -53,7 +53,6 @@ class PhoneNumberAnalysisAPIView(APIView):
             carrier_name = carrier.name_for_number(parsed_number, "en")
             national_number = str(parsed_number.national_number)
 
-            # Let's assume first 3 digits of national number = network code, rest = sequence
             network_code = national_number[:3]
             sequence_number = national_number[3:]
 
@@ -127,40 +126,57 @@ class IMSIAnalysisAPIView(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+def is_valid_luhn(number: str) -> bool:
+    total = 0
+    reverse_digits = number[::-1]
+    for i, digit in enumerate(reverse_digits):
+        n = int(digit)
+        if i % 2 == 1:  # Every second digit from the right
+            n *= 2
+            if n > 9:
+                n -= 9
+        total += n
+    return total % 10 == 0
+
 class ICCIDAnalysisAPIView(APIView):
     def post(self, request):
         iccid = request.data.get("iccid")
 
         if not iccid:
-            return Response({"error": "ICCID number is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "ICCID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        if not iccid.isdigit() or len(iccid) not in [19, 20]:
-            return Response({"error": "Invalid ICCID format. Should be 19 or 20 digit number."}, status=status.HTTP_400_BAD_REQUEST)
+        if not iccid.isdigit() or not (19 <= len(iccid) <= 20):
+            return Response({"error": "Invalid ICCID format. It should be a 19 or 20 digit numeric string."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            mii = iccid[:2]              # Usually '89' for telecom
-            country_code = iccid[2:5]    # First 3 digits after MII
-            issuer_code = iccid[5:7]     # Operator (example range, may vary)
-            individual_id = iccid[7:-1]  # Main part
-            check_digit = iccid[-1]      # Luhn check digit
+            # ICCID structure: MMCC NNNN SSSSSSSS C
+            mii = iccid[:2]  # Major Industry Identifier, usually '89'
+            country_code = iccid[2:5]  # Next 2–3 digits for country (MCC)
+            network_code = iccid[5:7]  # Next 2 digits for network (MNC)
+            sequence_number = iccid[7:-1]  # Subscriber or SIM number
+            check_digit = iccid[-1]  # Last digit
 
-            # Optional: Lookup from database using issuer_code
-            iccid_data = ICCIDRecord.objects.filter(issuer_code=issuer_code).first()
+            # Validate with Luhn
+            is_valid = is_valid_luhn(iccid)
+
+            # Lookup using IMSIRecord (MCC and MNC)
+            imsi_data = IMSIRecord.objects.filter(mcc=int(country_code), mnc=int(network_code)).first()
 
             response_data = {
                 "iccid": iccid,
                 "mii": mii,
                 "country_code": country_code,
-                "issuer_code": issuer_code,
-                "individual_id": individual_id,
+                "network_code": network_code,
+                "sequence_number": sequence_number,
                 "check_digit": check_digit,
+                "luhn_valid": is_valid
             }
 
-            if iccid_data:
-                response_data.update({
-                    "country": iccid_data.country,
-                    "network": iccid_data.network,
-                })
+            if imsi_data:
+                response_data["country"] = imsi_data.country
+                response_data["network"] = imsi_data.network
+            else:
+                response_data["warning"] = "ICCID parsed but no matching IMSI record found."
 
             return Response(response_data, status=status.HTTP_200_OK)
 
