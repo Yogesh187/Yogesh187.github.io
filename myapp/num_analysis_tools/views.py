@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from myuser.models import MyUser
 import uuid
-from .models import IMEIRecord , IMSIRecord
+from .models import IMEIRecord , IMSIRecord ,ICCIDRecord
 
 class PhoneNumberAnalysisAPIView(APIView):
     def post(self, request):
@@ -87,6 +87,47 @@ class IMSIAnalysisAPIView(APIView):
                 "mcc": mcc,
                 "mnc": mnc
             }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ICCIDAnalysisAPIView(APIView):
+    def post(self, request):
+        iccid = request.data.get("iccid")
+
+        if not iccid:
+            return Response({"error": "ICCID number is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not iccid.isdigit() or len(iccid) not in [19, 20]:
+            return Response({"error": "Invalid ICCID format. Should be 19 or 20 digit number."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            mii = iccid[:2]              # Usually '89' for telecom
+            country_code = iccid[2:5]    # First 3 digits after MII
+            issuer_code = iccid[5:7]     # Operator (example range, may vary)
+            individual_id = iccid[7:-1]  # Main part
+            check_digit = iccid[-1]      # Luhn check digit
+
+            # Optional: Lookup from database using issuer_code
+            iccid_data = ICCIDRecord.objects.filter(issuer_code=issuer_code).first()
+
+            response_data = {
+                "iccid": iccid,
+                "mii": mii,
+                "country_code": country_code,
+                "issuer_code": issuer_code,
+                "individual_id": individual_id,
+                "check_digit": check_digit,
+            }
+
+            if iccid_data:
+                response_data.update({
+                    "country": iccid_data.country,
+                    "network": iccid_data.network,
+                })
+
+            return Response(response_data, status=status.HTTP_200_OK)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

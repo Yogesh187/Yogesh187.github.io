@@ -32,27 +32,30 @@ class RegisterAPIView(APIView):
 
     
 
-
 class LoginAPIView(APIView):
     def post(self, request):
         name = request.data.get("name")
         password = request.data.get("password")
 
+        if not name or not password:
+            return Response({"error": "Name and password are required."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
             user = MyUser.objects.get(name=name)
 
-            if user.password:
+            if user.password == password:
                 user.is_login = True
                 user.save()
                 return Response({
                     "message": "Login successful",
                     "uuid": str(user.uuid)
-                    }, status=status.HTTP_200_OK)
+                }, status=status.HTTP_200_OK)
             else:
                 return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
 
         except MyUser.DoesNotExist:
             return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+
         
 
 

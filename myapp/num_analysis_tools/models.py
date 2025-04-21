@@ -27,3 +27,7 @@ class IMSIRecord(models.Model):
         db_table = "mcc_mnc_table"  
         managed = False  
       
+class ICCIDRecord(models.Model):
+    issuer_code = models.CharField(max_length=5)
+    country = models.CharField(max_length=100)
+    network = models.CharField(max_length=100)
