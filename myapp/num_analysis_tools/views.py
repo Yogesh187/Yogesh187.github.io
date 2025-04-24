@@ -93,6 +93,48 @@ class IMEILookupAPIView(APIView):
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CreateIMEIRecordAPIView(APIView):
+    def post(self, request):
+        tac = request.data.get("tac")
+        brand = request.data.get("brand")
+        devices = request.data.get("devices")
+
+        if not tac or not brand or not devices:
+            return Response(
+                {"error": "All fields (tac, brand, devices) are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Optional: Check if TAC already exists
+            if IMEIRecord.objects.filter(tac=tac).exists():
+                return Response(
+                    {"error": "Record with this TAC already exists."},
+                    status=status.HTTP_409_CONFLICT
+                )
+
+            # Create the new record
+            imei_record = IMEIRecord.objects.create(
+                tac=tac,
+                brand=brand,
+                devices=devices
+            )
+
+            return Response({
+                "message": "IMEI record created successfully.",
+                "record": {
+                    "id": imei_record.id,
+                    "tac": imei_record.tac,
+                    "brand": imei_record.brand,
+                    "devices": imei_record.devices
+                }
+            }, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         
 
 class IMSIAnalysisAPIView(APIView):

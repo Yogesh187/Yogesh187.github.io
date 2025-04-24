@@ -2,13 +2,13 @@ from django.db import models
 
 
 class IMEIRecord(models.Model):
-    id = models.AutoField(primary_key=True)  # Ensure primary key matches your schema
+    id = models.AutoField(primary_key=True) 
     tac = models.CharField(max_length=250, unique=True)
     brand = models.CharField(max_length=250)
     devices = models.TextField()
 
     class Meta:
-        db_table = 'myuser_tac'  
+        db_table = 'myuser_imei'  
 
 
 class IMSIRecord(models.Model):
