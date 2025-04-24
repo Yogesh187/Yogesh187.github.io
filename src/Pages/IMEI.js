@@ -13,7 +13,7 @@ export const IMEIFinder = () => {
     setError("");
     setResult(null);
 
-    if (!imei || imei.length < 14) {
+    if (!imei || imei.length >= 8) {
       setError("Please enter a valid IMEI number (minimum 14 digits).");
       return;
     }
