@@ -90,7 +90,7 @@ const HomePage = () => {
           </div>
 
           <div className="col-4 mb-4">
-            <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/Tacfinder")} style={{ cursor: "pointer" }}>
+            <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/ICCID")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
                 <h4 className="card-title">ICCID</h4>
