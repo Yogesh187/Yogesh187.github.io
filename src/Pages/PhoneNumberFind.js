@@ -27,7 +27,9 @@ const PhoneNumberFinder = () => {
             setResult({
                 phone_number: response.data.phone_number,
                 country: response.data.country,
-                carrier: response.data.carrier
+                carrier: response.data.carrier,
+                network_code: response.data.network_code,
+                sequence_number: response.data.sequence_number
             });
         } catch (err) {
             console.error("API Error:", err);
@@ -54,7 +56,7 @@ const PhoneNumberFinder = () => {
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Enter mobile number (e.g., +447111)"
+                        placeholder="Enter the Full Mobile Number (e.g., +44 7111)"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
                     />
@@ -81,6 +83,8 @@ const PhoneNumberFinder = () => {
                                 <td>{result.phone_number}</td>
                                 <td>{result.country}</td>
                                 <td>{result.carrier}</td>
+                                <td>{result.network_code}</td>
+                                <td>{result.sequence_number}</td>
                             </tr>
                         </tbody>
                     </table>

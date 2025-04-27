@@ -42,13 +42,13 @@ export const LuhnCheck = () => {
       <div className="card shadow-lg p-4">
         <h1 className="text-primary text-center">Luhn Check Digit Calculator</h1>
         <div className="mb-3">
-          <label className="form-label">Enter IMEI Digits:</label>
+          <label className="form-label">Enter the Digits:</label>
           <input
             type="text"
             className="form-control"
             value={imei}
             onChange={handleChange}
-            placeholder="Enter IMEI"
+            placeholder="Enter Digits"
           />
         </div>
         {checkDigit !== null && imei.length > 0 && (

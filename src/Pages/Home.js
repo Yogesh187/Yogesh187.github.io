@@ -44,7 +44,7 @@ const HomePage = () => {
         }}
       >
         <div>
-          <h1 className="display-4">International Numbering Plans</h1>
+          <h1 className="display-4">Phone Numbering Analyser</h1>
           <p className="lead">Your one-stop solution for all services!</p>
           {!isLoggedIn ? (
             <a href="/Login" className="btn btn-light btn-lg mt-3">
@@ -80,7 +80,7 @@ const HomePage = () => {
             </div>
           </div>
           <div className="col-4 mb-4">
-            <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/SIM")} style={{ cursor: "pointer" }}>
+            <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/PhoneNumberFind")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
                 <h4 className="card-title">SIM Finder</h4>
@@ -94,7 +94,16 @@ const HomePage = () => {
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
                 <h4 className="card-title">ICCID</h4>
-                <p className="card-text">Simplest way to find your SIM by number.</p>
+                <p className="card-text">Simplest way to find your ICCID</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-4 mb-4">
+            <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/LuhnCheck")} style={{ cursor: "pointer" }}>
+              <div className="card-body">
+                <FaSimCard className="fa-3x text-primary mb-3" />
+                <h4 className="card-title">Luhn Check</h4>
+                <p className="card-text">Simplest way to find your Luhn check</p>
               </div>
             </div>
           </div>
@@ -102,17 +111,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/Tacfinder")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">ICCID</h4>
-                <p className="card-text">Simplest way to find your SIM by number.</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-4 mb-4">
-            <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/Tacfinder")} style={{ cursor: "pointer" }}>
-              <div className="card-body">
-                <FaSimCard className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">ICCID</h4>
-                <p className="card-text">Simplest way to find your SIM by number.</p>
+                <h4 className="card-title">CELL ID</h4>
+                <p className="card-text">Simplest way to find your CELL ID</p>
               </div>
             </div>
           </div>
