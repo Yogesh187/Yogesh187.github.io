@@ -3,11 +3,7 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export const CreateICCID = () => {
-  const [mcc, setMcc] = useState("");
-  const [mnc, setMnc] = useState("");
-  const [country, setCountry] = useState("");
-  const [countryCode, setCountryCode] = useState("");
-  const [network, setNetwork] = useState("");
+  const [iccid, setIccid] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -15,26 +11,18 @@ export const CreateICCID = () => {
     setMessage("");
     setError("");
 
-    if (!mcc || !mnc || !country || !countryCode || !network) {
-      setError("All fields (MCC, MNC, Country, Country Code, Network) are required.");
+    if (!iccid) {
+      setError("ICCID is required.");
       return;
     }
 
     try {
       const response = await axios.post("http://127.0.0.1:8000/api/tools/create-iccid/", {
-        mcc: parseInt(mcc),
-        mnc: parseInt(mnc),
-        country: country,
-        country_code: parseInt(countryCode),
-        network: network,
+        iccid: iccid.trim(),  // Send only ICCID
       });
 
-      setMessage(response.data.message || "ICCID record created successfully!");
-      setMcc("");
-      setMnc("");
-      setCountry("");
-      setCountryCode("");
-      setNetwork("");
+      setMessage(response.data.message || "ICCID processed successfully!");
+      setIccid("");
     } catch (err) {
       console.error(err);
       setError(
@@ -49,63 +37,19 @@ export const CreateICCID = () => {
         <h2 className="text-center mb-4">Create ICCID Record</h2>
 
         <div className="mb-3">
-          <label className="form-label">MCC (Mobile Country Code)</label>
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Enter MCC"
-            value={mcc}
-            onChange={(e) => setMcc(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">MNC (Mobile Network Code)</label>
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Enter MNC"
-            value={mnc}
-            onChange={(e) => setMnc(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Country</label>
+          <label className="form-label">ICCID (Integrated Circuit Card ID)</label>
           <input
             type="text"
             className="form-control"
-            placeholder="Enter Country"
-            value={country}
-            onChange={(e) => setCountry(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Country Code</label>
-          <input
-            type="number"
-            className="form-control"
-            placeholder="Enter Country Code"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-          />
-        </div>
-
-        <div className="mb-3">
-          <label className="form-label">Network</label>
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Enter Network"
-            value={network}
-            onChange={(e) => setNetwork(e.target.value)}
+            placeholder="Enter ICCID"
+            value={iccid}
+            onChange={(e) => setIccid(e.target.value)}
           />
         </div>
 
         <div className="text-center">
-          <button className="btn btn-success" onClick={handleCreate}>
-            Create Record
+          <button className="btn btn-primary" onClick={handleCreate}>
+            Submit ICCID
           </button>
         </div>
 
