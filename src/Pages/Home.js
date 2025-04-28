@@ -44,7 +44,7 @@ const HomePage = () => {
         }}
       >
         <div>
-          <h1 className="display-4">Phone Numbering Analyser</h1>
+          <h1 className="display-4">Phone Numbering Analyzer</h1>
           <p className="lead">Your one-stop solution for all services!</p>
           {!isLoggedIn ? (
             <a href="/Login" className="btn btn-light btn-lg mt-3">

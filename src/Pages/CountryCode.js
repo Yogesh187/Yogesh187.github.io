@@ -44,6 +44,7 @@ const CountryCode = () => {
                                         <th>Country Code</th>
                                         <th>MCC</th>
                                         <th>MNC</th>
+                                        <th>Carrier</th>
                                         <th>ISO Code</th>
                                     </tr>
                                 </thead>
@@ -54,6 +55,7 @@ const CountryCode = () => {
                                             <td>{result.country_code}</td>
                                             <td>{result.mcc}</td>
                                             <td>{result.mnc}</td>
+                                            <td>{result.name}</td>
                                             <td>{result.iso.toUpperCase()}</td>
                                         </tr>
                                     ))}

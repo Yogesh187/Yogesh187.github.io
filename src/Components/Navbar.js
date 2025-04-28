@@ -230,7 +230,7 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
       <div className="container-fluid">
         <Link className="navbar-brand fw-bold" to="/">
-          Mobile Phone Analysis
+        Phone Numbering Analyzer
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
           <span className="navbar-toggler-icon"></span>
@@ -266,27 +266,27 @@ function Navbar() {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <i className="fa fa-phone me-2"></i>Phone Number
+                <i className="fa fa-phone me-2"></i>Number Analysis
               </Link>
               <ul className="dropdown-menu" aria-labelledby="phoneNumberDropdown">
                 <li>
                   <Link className="dropdown-item" to="/Pages/PhoneNumberFind">
-                    Find Phone Number
+                    Phone Number Lookup
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/Pages/CarrierLookup">
-                    Carrier Lookup
+                  <Link className="dropdown-item" to="/Pages/IMSI">
+                    IMSI
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/Pages/PhoneValidation">
-                    Phone Validation
+                  <Link className="dropdown-item" to="/Pages/IMEI">
+                    IMEI
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/Pages/SpamCheck">
-                    Spam Check
+                  <Link className="dropdown-item" to="/Pages/ICCID">
+                    ICCID
                   </Link>
                 </li>
               </ul>
