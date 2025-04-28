@@ -390,7 +390,7 @@ class ManualMCCMNCEntryAPIView(APIView):
                     country_code=0,     # or you can leave blank if allowed
                     network="Unknown",  # temporary default
                 )
-                return Response({"message": "MCC and MNC not found. New IMSI record created."}, status=status.HTTP_201_CREATED)
+                return Response({"message": "New record created."}, status=status.HTTP_201_CREATED)
 
             else:
                 # 3. If found
