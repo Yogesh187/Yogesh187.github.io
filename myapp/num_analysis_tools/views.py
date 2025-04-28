@@ -317,42 +317,85 @@ class ICCIDAnalysisAPIView(APIView):
 
 
 
+# class ManualMCCMNCEntryAPIView(APIView):
+#     def post(self, request):
+#         mcc = request.data.get("mcc")  # Mobile Country Code
+#         mnc = request.data.get("mnc")  # Mobile Network Code
+#         country = request.data.get("country")
+#         country_code = request.data.get("country_code")
+#         network = request.data.get("network")
+
+#         # Check required fields
+#         if not all([mcc, mnc, country, country_code, network]):
+#             return Response({"error": "All fields (mcc, mnc, country, country_code, network) are required."},
+#                             status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             # Check if entry already exists (optional)
+#             existing = IMSIRecord.objects.filter(mcc=mcc, mnc=mnc).first()
+#             if existing:
+#                 return Response({"error": "Entry with given MCC and MNC already exists."},
+#                                 status=status.HTTP_400_BAD_REQUEST)
+
+#             # Insert into table
+#             IMSIRecord.objects.create(
+#                 mcc=int(mcc),
+#                 mcc_int=int(mcc),
+#                 mnc=int(mnc),
+#                 mnc_int=int(mnc),
+#                 iso="",  
+#                 country=country,
+#                 country_code=int(country_code),
+#                 network=network,
+#                 Country_Code_add=int(country_code)  
+#             )
+
+#             return Response({"message": "MCC-MNC data inserted successfully."},
+#                             status=status.HTTP_201_CREATED)
+
+#         except Exception as e:
+#             return Response({"error": str(e)},
+#                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class ManualMCCMNCEntryAPIView(APIView):
     def post(self, request):
-        mcc = request.data.get("mcc")  # Mobile Country Code
-        mnc = request.data.get("mnc")  # Mobile Network Code
-        country = request.data.get("country")
-        country_code = request.data.get("country_code")
-        network = request.data.get("network")
+        iccid = request.data.get("iccid")
 
-        # Check required fields
-        if not all([mcc, mnc, country, country_code, network]):
-            return Response({"error": "All fields (mcc, mnc, country, country_code, network) are required."},
-                            status=status.HTTP_400_BAD_REQUEST)
+        if not iccid:
+            return Response({"error": "ICCID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # Check if entry already exists (optional)
-            existing = IMSIRecord.objects.filter(mcc=mcc, mnc=mnc).first()
-            if existing:
-                return Response({"error": "Entry with given MCC and MNC already exists."},
-                                status=status.HTTP_400_BAD_REQUEST)
+            if len(iccid) < 10:
+                return Response({"error": "Invalid ICCID. Must be at least 10 digits."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Insert into table
-            IMSIRecord.objects.create(
-                mcc=int(mcc),
-                mcc_int=int(mcc),
-                mnc=int(mnc),
-                mnc_int=int(mnc),
-                iso="",  
-                country=country,
-                country_code=int(country_code),
-                network=network,
-                Country_Code_add=int(country_code)  
-            )
+            industry_identifier = iccid[:2]
+            if industry_identifier != "89":
+                return Response({"error": "Invalid Industry Identifier. Not a telecom ICCID."}, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response({"message": "MCC-MNC data inserted successfully."},
-                            status=status.HTTP_201_CREATED)
+            mcc = iccid[2:5]
+            mnc = iccid[5:7]
+
+            # 1. Try to find
+            matching_record = IMSIRecord.objects.filter(mcc=int(mcc), mnc=int(mnc)).first()
+
+            if not matching_record:
+                # 2. If not found → create new entry
+                new_record = IMSIRecord.objects.create(
+                    mcc=int(mcc),
+                    mcc_int=int(mcc),
+                    mnc=int(mnc),
+                    mnc_int=int(mnc),
+                    country="Unknown",  # since you don't have real country yet
+                    country_code=0,     # or you can leave blank if allowed
+                    network="Unknown",  # temporary default
+                )
+                return Response({"message": "MCC and MNC not found. New IMSI record created."}, status=status.HTTP_201_CREATED)
+
+            else:
+                # 3. If found
+                return Response({"message": "MCC and MNC found. No new record created."}, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response({"error": str(e)},
-                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
