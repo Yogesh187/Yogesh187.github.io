@@ -111,8 +111,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/Tacfinder")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">CELL ID</h4>
-                <p className="card-text">Simplest way to find your CELL ID</p>
+                <h4 className="card-title">TAC FINDER</h4>
+                <p className="card-text">Simplest way to extract your TAC</p>
               </div>
             </div>
           </div>
