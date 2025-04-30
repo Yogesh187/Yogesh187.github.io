@@ -53,8 +53,8 @@ class PhoneNumberAnalysisAPIView(APIView):
             carrier_name = carrier.name_for_number(parsed_number, "en")
             national_number = str(parsed_number.national_number)
 
-            network_code = national_number[:3]
-            sequence_number = national_number[3:]
+            network_code = national_number[:2]
+            sequence_number = national_number[2:]
 
             return Response({
                 "phone_number": phone_number,
