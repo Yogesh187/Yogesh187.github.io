@@ -28,7 +28,7 @@ const HomePage = () => {
     if (loggedIn) {
       navigate(path);
     } else {
-      alert("Please log in to access this feature.");
+      navigate("/Login"); 
     }
   };
 
