@@ -365,36 +365,65 @@ class ManualMCCMNCEntryAPIView(APIView):
         if not iccid:
             return Response({"error": "ICCID is required."}, status=status.HTTP_400_BAD_REQUEST)
 
+        if not iccid.isdigit() or not (19 <= len(iccid) <= 20):
+            return Response({"error": "Invalid ICCID format. It should be a 19 or 20 digit numeric string."}, status=status.HTTP_400_BAD_REQUEST)
+
         try:
-            if len(iccid) < 10:
-                return Response({"error": "Invalid ICCID. Must be at least 10 digits."}, status=status.HTTP_400_BAD_REQUEST)
+            mii = iccid[:2]
+            if mii != "89":
+                return Response({"error": "Invalid MII. Expected telecom ICCID starting with '89'."}, status=status.HTTP_400_BAD_REQUEST)
 
-            industry_identifier = iccid[:2]
-            if industry_identifier != "89":
-                return Response({"error": "Invalid Industry Identifier. Not a telecom ICCID."}, status=status.HTTP_400_BAD_REQUEST)
+            # Try smart MCC/MNC combinations (same as your GET API logic)
+            mcc_mnc_combinations = []
 
-            mcc = iccid[2:5]
-            mnc = iccid[5:7]
+            # 3-digit MCC → try 3-digit MNC, then 2-digit MNC
+            mcc_3 = iccid[2:5]
+            mnc_3 = iccid[5:8]
+            mnc_2 = iccid[5:7]
+            mcc_mnc_combinations.append((mcc_3, mnc_3))
+            mcc_mnc_combinations.append((mcc_3, mnc_2))
 
-            # 1. Try to find
-            matching_record = IMSIRecord.objects.filter(mcc=int(mcc), mnc=int(mnc)).first()
+            # 2-digit MCC → try 3-digit MNC, then 2-digit MNC
+            mcc_2 = iccid[2:4]
+            mnc_3_alt = iccid[4:7]
+            mnc_2_alt = iccid[4:6]
+            mcc_mnc_combinations.append((mcc_2, mnc_3_alt))
+            mcc_mnc_combinations.append((mcc_2, mnc_2_alt))
 
-            if not matching_record:
-                # 2. If not found → create new entry
-                new_record = IMSIRecord.objects.create(
-                    mcc=int(mcc),
-                    mcc_int=int(mcc),
-                    mnc=int(mnc),
-                    mnc_int=int(mnc),
-                    country="Unknown",  # since you don't have real country yet
-                    country_code=0,     # or you can leave blank if allowed
-                    network="Unknown",  # temporary default
-                )
-                return Response({"message": "New record created."}, status=status.HTTP_201_CREATED)
+            # Search for existing match
+            for mcc, mnc in mcc_mnc_combinations:
+                try:
+                    mcc_int = int(mcc)
+                    mnc_int = int(mnc)
+                    record = IMSIRecord.objects.filter(mcc=mcc_int, mnc=mnc_int).first()
+                    if record:
+                        return Response({"message": "MCC and MNC already exist. No new record created."}, status=status.HTTP_200_OK)
+                except ValueError:
+                    continue  # skip invalid mcc/mnc pairs
 
-            else:
-                # 3. If found
-                return Response({"message": "MCC and MNC found. No new record created."}, status=status.HTTP_200_OK)
+            # No matching record found → create using first valid mcc/mnc
+            for mcc, mnc in mcc_mnc_combinations:
+                try:
+                    mcc_int = int(mcc)
+                    mnc_int = int(mnc)
+
+                    IMSIRecord.objects.create(
+                        mcc=mcc_int,
+                        mcc_int=mcc_int,
+                        mnc=mnc_int,
+                        mnc_int=mnc_int,
+                        country="Unknown",
+                        country_code=0,
+                        network="Unknown"
+                    )
+                    return Response({"message": f"New record created with MCC={mcc_int} and MNC={mnc_int}."}, status=status.HTTP_201_CREATED)
+
+                except ValueError:
+                    continue  # skip invalid combo
+                except Exception as e:
+                    return Response({"error": f"Failed to create record: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+            return Response({"error": "Unable to extract valid MCC and MNC from ICCID."}, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
