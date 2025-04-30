@@ -266,17 +266,17 @@ function Navbar() {
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
               >
-                <i className="fa fa-phone me-2"></i>Number Analysis
+                <i className="fa fa-phone me-2"></i>Numbering Analysis
               </Link>
               <ul className="dropdown-menu" aria-labelledby="phoneNumberDropdown">
                 <li>
                   <Link className="dropdown-item" to="/Pages/PhoneNumberFind">
-                    Phone Number Lookup
+                    Mobile Number Analysis
                   </Link>
                 </li>
                 <li>
                   <Link className="dropdown-item" to="/Pages/IMSI">
-                    IMSI
+                  IMSI
                   </Link>
                 </li>
                 <li>

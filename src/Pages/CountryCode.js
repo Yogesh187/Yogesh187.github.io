@@ -22,12 +22,12 @@ const CountryCode = () => {
     return (
         <div className="container mt-5">
             <div className="card shadow p-4">
-                <h2 className="text-center mb-4">🌍 Country Code Finder</h2>
+                <h2 className="text-center mb-4">Country Codes</h2>
                 <div className="input-group mb-3">
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Enter country name"
+                        placeholder="Search Country Code or Country Name"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                     />
@@ -40,29 +40,29 @@ const CountryCode = () => {
                             <table className="table table-bordered table-striped">
                                 <thead className="table-dark text-center">
                                     <tr>
-                                        <th>Country</th>
-                                        <th>Country Code</th>
+                                        <th>Phone Code</th>
+                                        <th>Country Name</th>
+                                        <th>ISO Code</th>
                                         <th>MCC</th>
                                         <th>MNC</th>
-                                        <th>Carrier</th>
-                                        <th>ISO Code</th>
+                                        <th>Carrier Name</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredCountries.map((result,index) => (
                                         <tr key={index}>
-                                            <td>{result.country}</td>
                                             <td>{result.country_code}</td>
+                                            <td>{result.country}</td>
+                                            <td>{result.iso.toUpperCase()}</td>
                                             <td>{result.mcc}</td>
                                             <td>{result.mnc}</td>
                                             <td>{result.name}</td>
-                                            <td>{result.iso.toUpperCase()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         ) : (
-                            <p className="text-danger text-center">❌ No country found.</p>
+                            <p className="text-danger text-center">❌ Invalid Country Name or Country Code ❌</p>
                         )}
                     </div>
                 )}

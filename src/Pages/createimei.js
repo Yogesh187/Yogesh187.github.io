@@ -43,33 +43,33 @@ export const CreateIMEI = () => {
         <h2 className="text-center mb-4">Create IMEI Record</h2>
 
         <div className="mb-3">
-          <label className="form-label">TAC</label>
+          <label className="form-label">TAC Code </label>
           <input
             type="text"
             className="form-control"
-            placeholder="Enter TAC"
+            placeholder="Enter first 8 digits of IMEI"
             value={tac}
             onChange={(e) => setTac(e.target.value)}
           />
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Brand</label>
+          <label className="form-label">Device</label>
           <input
             type="text"
             className="form-control"
-            placeholder="Enter Brand"
+            placeholder="Enter Device Name"
             value={brand}
             onChange={(e) => setBrand(e.target.value)}
           />
         </div>
 
         <div className="mb-3">
-          <label className="form-label">Devices</label>
+          <label className="form-label">Model</label>
           <input
             type="text"
             className="form-control"
-            placeholder="Enter Devices"
+            placeholder="Enter Model Name"
             value={devices}
             onChange={(e) => setDevices(e.target.value)}
           />

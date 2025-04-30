@@ -41,12 +41,12 @@ export const IMEIFinder = () => {
   return (
     <div className="container mt-5">
       <div className="card shadow p-4">
-        <h2 className="text-center mb-4">IMEI Lookup</h2>
+        <h2 className="text-center mb-4">IMEI - International Mobile Equipment Identity</h2>
         <div className="input-group mb-3">
           <input
             type="text"
             className="form-control"
-            placeholder="Enter IMEI number"
+            placeholder="Enter Full IMEI Number or TAC Code"
             value={imei}
             onChange={(e) => setImei(e.target.value)}
           />
@@ -63,9 +63,9 @@ export const IMEIFinder = () => {
           <table className="table table-bordered table-striped mt-4">
             <thead className="table-dark text-center">
               <tr>
-                <th>IMEI</th>
-                <th>Brand</th>
+                <th>IMEI / TAC Code</th>
                 <th>Device</th>
+                <th>Model</th>
               </tr>
             </thead>
             <tbody className="text-center">

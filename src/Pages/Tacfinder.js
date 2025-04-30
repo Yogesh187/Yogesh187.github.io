@@ -27,15 +27,15 @@ export const TacFinder = () => {
   return (
     <div className="container mt-5">
       <div className="card shadow-lg p-4">
-        <h1 className="text-primary text-center">TAC Finder</h1>
+        <h1 className="text-primary text-center">TAC Identifier</h1>
         <div className="mb-3">
-          <label className="form-label">Enter IMEI Number (15 digits):</label>
+          <label className="form-label">Enter the IMEI Number (15 digits)</label>
           <input
             type="text"
             className="form-control"
             value={imei}
             onChange={handleInputChange}
-            placeholder="Enter 15-digit IMEI"
+            placeholder="Enter the IMEI number"
             maxLength={15}
           />
         </div>
@@ -48,7 +48,7 @@ export const TacFinder = () => {
               tac === "Invalid IMEI" ? "alert-danger" : "alert-success"
             }`}
           >
-            <strong>{tac === "Invalid IMEI" ? tac : `TAC Code: ${tac}`}</strong>
+            <strong>{tac === "Invalid IMEI" ? tac : `Your TAC Code:  ${tac}`}</strong>
           </div>
         )}
       </div>

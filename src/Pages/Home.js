@@ -45,7 +45,7 @@ const HomePage = () => {
       >
         <div>
           <h1 className="display-4">Phone Numbering Analyzer</h1>
-          <p className="lead">Your one-stop solution for all services!</p>
+          <p className="lead">Dial into the details — your numbers have secrets!</p>
           {!isLoggedIn ? (
             <a href="/Login" className="btn btn-light btn-lg mt-3">
               Login
@@ -65,8 +65,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/IMEI")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaMagnifyingGlass className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">IMEI Finder</h4>
-                <p className="card-text">Find your device using IMEI number.</p>
+                <h4 className="card-title">IMEI Decoder</h4>
+                <p className="card-text">Locate your device instantly using its IMEI number</p>
               </div>
             </div>
           </div>
@@ -74,8 +74,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/IMSI")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaDollarSign className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">IMSI Finder</h4>
-                <p className="card-text">Identify service provider using IMSI.</p>
+                <h4 className="card-title">IMSI Decoder</h4>
+                <p className="card-text">Discover the network provider linked to your IMSI</p>
               </div>
             </div>
           </div>
@@ -83,8 +83,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/PhoneNumberFind")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">SIM Finder</h4>
-                <p className="card-text">Find SIM details using ICCID.</p>
+                <h4 className="card-title">SIM & Carrier Checker</h4>
+                <p className="card-text">Discover details tied to your mobile number and SIM</p>
               </div>
             </div>
           </div>
@@ -93,8 +93,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/ICCID")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">ICCID</h4>
-                <p className="card-text">Simplest way to find your ICCID</p>
+                <h4 className="card-title">ICCID Checker</h4>
+                <p className="card-text">Easily retrieve and verify your SIM’s ICCID number</p>
               </div>
             </div>
           </div>
@@ -102,8 +102,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/LuhnCheck")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">Luhn Check</h4>
-                <p className="card-text">Simplest way to find your Luhn check</p>
+                <h4 className="card-title">Luhn Validator</h4>
+                <p className="card-text">Check number validity using the Luhn algorithm</p>
               </div>
             </div>
           </div>
@@ -111,8 +111,8 @@ const HomePage = () => {
             <div className="card shadow-sm" onClick={() => handleNavigation("/Pages/Tacfinder")} style={{ cursor: "pointer" }}>
               <div className="card-body">
                 <FaSimCard className="fa-3x text-primary mb-3" />
-                <h4 className="card-title">TAC FINDER</h4>
-                <p className="card-text">Simplest way to extract your TAC</p>
+                <h4 className="card-title">TAC Extractor</h4>
+                <p className="card-text">Extract the device type from your IMEI’s TAC</p>
               </div>
             </div>
           </div>

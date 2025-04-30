@@ -31,7 +31,7 @@ export const IMSIFinder = () => {
   return (
     <div className="container mt-5">
       <div className="card shadow p-4">
-        <h2 className="text-center mb-4">IMSI Lookup</h2>
+        <h2 className="text-center mb-4">IMSI - International Mobile Subscriber Identity</h2>
         <div className="input-group mb-3">
           <input
             type="text"
@@ -53,20 +53,20 @@ export const IMSIFinder = () => {
               <table className="table table-bordered table-striped">
                 <thead className="table-dark text-center">
                   <tr>
-                    <th>IMSI</th>
-                    <th>Country</th>
-                    <th>Network</th>
+                    <th>Whole IMSI</th>
                     <th>MCC</th>
                     <th>MNC</th>
+                    <th>Carrier Name</th>
+                    <th>Country Name</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>{result.imsi}</td>
-                    <td>{result.country}</td>
-                    <td>{result.network || "N/A"}</td>
                     <td>{result.mcc}</td>
                     <td>{result.mnc}</td>
+                    <td>{result.network || "N/A"}</td>
+                    <td>{result.country}</td>
                   </tr>
                 </tbody>
               </table>

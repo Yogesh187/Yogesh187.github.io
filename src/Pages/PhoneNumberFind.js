@@ -40,7 +40,7 @@ const PhoneNumberFinder = () => {
     return (
         <div className="container mt-5">
             <div className="card shadow p-4">
-                <h2 className="text-center mb-4">Mobile Number Lookup</h2>
+                <h2 className="text-center mb-4">Mobile Number Analysis</h2>
 
                 {/* <div className="mb-3">
                     <input
@@ -56,7 +56,7 @@ const PhoneNumberFinder = () => {
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Enter the Full Mobile Number (e.g., +44 7111)"
+                        placeholder="Enter Full Mobile Number with Extention (eg: +44 780)"
                         value={mobileNumber}
                         onChange={(e) => setMobileNumber(e.target.value)}
                     />
@@ -71,9 +71,9 @@ const PhoneNumberFinder = () => {
                     <table className="table table-bordered table-striped">
                         <thead className="table-dark text-center">
                             <tr>
-                                <th>Phone Number</th>
-                                <th>Country</th>
-                                <th>Carrier</th>
+                                <th>Mobile Number</th>
+                                <th>Country Name</th>
+                                <th>Carrier Name</th>
                                 <th>Network Code</th>
                                 <th>Sequence Number</th>
                             </tr>

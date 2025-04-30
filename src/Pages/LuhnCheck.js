@@ -40,22 +40,22 @@ export const LuhnCheck = () => {
   return (
     <div className="container mt-5">
       <div className="card shadow-lg p-4">
-        <h1 className="text-primary text-center">Luhn Check Digit Calculator</h1>
+        <h1 className="text-primary text-center">Luhn Algorithm - Calculate Check Digit</h1>
         <div className="mb-3">
-          <label className="form-label">Enter the Digits:</label>
+          <label className="form-label">Enter The Numbers :</label>
           <input
             type="text"
             className="form-control"
             value={imei}
             onChange={handleChange}
-            placeholder="Enter Digits"
+            placeholder="Enter Numbers Without The Check Digit"
           />
         </div>
         {checkDigit !== null && imei.length > 0 && (
           <div className="mt-3 alert alert-success">
-            <strong>Suggested IMEI:</strong> {imei}{checkDigit}
+            <strong>Calculated Full Code : </strong> {imei}{checkDigit}
             <br />
-            <strong>Check Digit:</strong> {checkDigit}
+            <strong>Check Digit :</strong> {checkDigit}
           </div>
         )}
       </div>
