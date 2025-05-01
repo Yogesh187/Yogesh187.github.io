@@ -49,6 +49,7 @@ export const CreateIMEI = () => {
             className="form-control"
             placeholder="Enter first 8 digits of IMEI"
             value={tac}
+            maxLength={8}
             onChange={(e) => setTac(e.target.value)}
           />
         </div>

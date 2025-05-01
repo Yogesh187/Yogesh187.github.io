@@ -29,25 +29,29 @@ export const ICCIDFinder = () => {
       setResult(response.data);
     } catch (err) {
       console.error(err);
-      if (err.response?.status === 404) {
-        navigate("http://127.0.0.1:8000/api/tools/analyze-iccid/");
-      } else {
       setError(
-        err.response?.data?.error || "Something went wrong. Please try again."
+        "ICCID Data Not Found In Database"
       );
-    }
+    //   if (err.response?.status === 404) {
+    //     navigate("/Pages/createiccid");
+    //   } else {
+    //   setError(
+    //     err.response?.data?.error || "Something went wrong. Please try again."
+    //   );
+    // }
   }
   };
   return (
     <div className="container mt-5">
       <div className="card shadow p-4">
-        <h2 className="text-center mb-4">ICCID Lookup</h2>
+        <h2 className="text-center mb-4">ICCID - Integrated Circuit Card Identification</h2>
         <div className="input-group mb-3">
           <input
             type="text"
             className="form-control"
-            placeholder="Enter ICCID number"
+            placeholder="Enter 19 to 20 digit ICCID number"
             value={iccid}
+            maxLength={20}
             onChange={(e) => setIccid(e.target.value)}
           />
           <button className="btn btn-primary" onClick={handleSearch}>
@@ -63,14 +67,14 @@ export const ICCIDFinder = () => {
           <table className="table table-bordered table-striped mt-4">
             <thead className="table-dark text-center">
               <tr>
-                <th>iccid</th>
-                <th>mii</th>
-                <th>country_name</th>
-                <th>country_code</th>
-                <th>network_operator</th>
-                <th>network_code</th>
-                <th>unique_number</th>
-                <th>check_digit</th>
+                <th>Whole ICCID</th>
+                <th>MII</th>
+                <th>Country Code</th>
+                <th>Country Name</th>
+                <th>Network Code</th>
+                <th>Carrier Name</th>
+                <th>Sequence Number</th>
+                <th>Luhn Check Digit</th> 
                 <th>luhn_valid</th>
               </tr>
             </thead>
@@ -78,13 +82,13 @@ export const ICCIDFinder = () => {
               <tr>
                 <td>{result.iccid}</td>
                 <td>{result.mii}</td>
-                <td>{result.country_name}</td>
                 <td>{result.country_code}</td>
-                <td>{result.network_operator}</td>
+                <td>{result.country_name}</td>
                 <td>{result.network_code}</td>
+                <td>{result.network_operator}</td>
                 <td>{result.unique_number}</td>
                 <td>{result.check_digit}</td>
-                <td>{result.luhn_valid}</td>
+                <td>{result.luhn_valid? 'True' : 'False'}</td>
               </tr>
             </tbody>
           </table>
