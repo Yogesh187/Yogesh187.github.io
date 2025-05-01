@@ -7,32 +7,13 @@ from myuser.models import MyUser
 import uuid
 from .models import IMEIRecord , IMSIRecord ,ICCIDRecord
 
-# class PhoneNumberAnalysisAPIView(APIView):
-#     def post(self, request):
-#         phone_number = request.data.get("phone_number")
+import json
+import os
+from django.conf import settings
 
-#         if not phone_number:
-#             return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             parsed_number = phonenumbers.parse(phone_number)
-
-#             # Ensure phone number is valid
-#             if not phonenumbers.is_valid_number(parsed_number):
-#                 return Response({"error": "Invalid phone number."}, status=status.HTTP_400_BAD_REQUEST)
-
-#             # Extract country and carrier information
-#             country = geocoder.description_for_number(parsed_number, "en")
-#             carrier_name = carrier.name_for_number(parsed_number, "en")
-
-#             return Response({
-#                 "phone_number": phone_number,
-#                 "country": country,
-#                 "carrier": carrier_name
-#             }, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+json_path = os.path.join(settings.BASE_DIR, 'num_analysis_tools', 'extended_country_phone_codes.json')
+with open(json_path, 'r') as f:
+    PHONE_CODE_DATA = json.load(f)
 
 
 class PhoneNumberAnalysisAPIView(APIView):
@@ -56,6 +37,26 @@ class PhoneNumberAnalysisAPIView(APIView):
             network_code = national_number[:3]
             sequence_number = national_number[3:]
 
+
+            valid_mncs = IMSIRecord.objects.filter(country=country).values_list('mnc', flat=True)
+
+            # Sort MNCs by length descending (to match longer codes first)
+            valid_mncs = sorted([str(mnc) for mnc in valid_mncs if mnc is not None], key=lambda x: -len(x))
+
+            network_code = None
+            sequence_number = None
+
+            # Try to match a valid MNC from the national number prefix
+            for mnc_candidate in valid_mncs:
+                if national_number.startswith(mnc_candidate):
+                    network_code = mnc_candidate
+                    sequence_number = national_number[len(mnc_candidate):]
+                    break
+
+            # If no match found
+            if not network_code:
+                return Response({"error": "No matching country_code and mnc found in DB for this phone number."}, status=status.HTTP_404_NOT_FOUND)
+
             return Response({
                 "phone_number": phone_number,
                 "country": country,
@@ -67,9 +68,66 @@ class PhoneNumberAnalysisAPIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        
+# class PhoneNumberAnalysisAPIView(APIView):
+#     def post(self, request):
+#         phone_number = request.data.get("phone_number")
+
+#         if not phone_number:
+#             return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+#         try:
+#             parsed_number = phonenumbers.parse(phone_number)
+
+#             if not phonenumbers.is_valid_number(parsed_number):
+#                 return Response({"error": "Invalid phone number."}, status=status.HTTP_400_BAD_REQUEST)
+
+#             # Extract data
+#             country = geocoder.description_for_number(parsed_number, "en")
+#             carrier_name = carrier.name_for_number(parsed_number, "en")
+#             national_number = str(parsed_number.national_number)
+
+#             matched_entry = None
+#             extracted_country_code = None
+#             network_code = None
+#             sequence_number = None
+
+#             # Match JSON entries based on country
+#             possible_entries = [entry for entry in PHONE_CODE_DATA if entry["country"].lower() == country.lower()]
+            
+#             for entry in possible_entries:
+#                 cc = entry["country_code"]
+#                 if national_number.startswith(cc):
+#                     remaining = national_number[len(cc):]
+#                     # Try 2 or 3 digit MNC
+#                     for mnc_len in [2, 3]:
+#                         candidate_mnc = remaining[:mnc_len]
+#                         if candidate_mnc == entry["mnc"]:
+#                             matched_entry = entry
+#                             extracted_country_code = cc
+#                             network_code = candidate_mnc
+#                             sequence_number = remaining[mnc_len:]
+#                             break
+#                 if matched_entry:
+#                     break
+
+#             if not matched_entry:
+#                 return Response({"error": "No matching country_code and mnc found in JSON for this phone number."}, status=status.HTTP_404_NOT_FOUND)
+
+#             return Response({
+#                 "phone_number": phone_number,
+#                 "country": country,
+#                 "carrier": carrier_name,
+#                 "country_code": extracted_country_code,
+#                 "network_code": network_code,
+#                 "sequence_number": sequence_number,
+#                 "operator": matched_entry["name"]
+#             }, status=status.HTTP_200_OK)
+
+#         except Exception as e:
+#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+    
 
 class IMEILookupAPIView(APIView):
     def post(self, request):
@@ -180,149 +238,9 @@ def is_valid_luhn(number: str) -> bool:
         total += n
     return total % 10 == 0
 
-# class ICCIDAnalysisAPIView(APIView):
-#     def post(self, request):
-#         iccid = request.data.get("iccid")
-
-#         if not iccid:
-#             return Response({"error": "ICCID is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-#         if not iccid.isdigit() or not (19 <= len(iccid) <= 20):
-#             return Response({"error": "Invalid ICCID format. It should be a 19 or 20 digit numeric string."}, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             mii = iccid[:2]
-#             check_digit = iccid[-1]
-#             imsi_data = None
-
-#             # Try with 3-digit MCC first
-#             possible_mcc = iccid[2:5]
-#             possible_mnc = iccid[5:7]
-#             imsi_data = IMSIRecord.objects.filter(country_code=int(possible_mcc), mnc=int(possible_mnc)).first()
-
-#             if imsi_data:
-#                 country_code = possible_mcc
-#                 network_code = possible_mnc
-#                 sequence_number = iccid[7:-1]
-#             else:
-#                 # Fallback to 2-digit MCC
-#                 possible_mcc = iccid[2:4]
-#                 possible_mnc = iccid[4:6]
-#                 imsi_data = IMSIRecord.objects.filter(country_code=int(possible_mcc), mnc=int(possible_mnc)).first()
-
-#                 country_code = possible_mcc
-#                 network_code = possible_mnc
-#                 sequence_number = iccid[6:-1]
-
-#             # Validate with Luhn
-#             is_valid = is_valid_luhn(iccid)
-
-#             response_data = {
-#                 "iccid": iccid,
-#                 "mii": mii,
-#                 "country_code": country_code,
-#                 "network_code": network_code,
-#                 "sequence_number": sequence_number,
-#                 "check_digit": check_digit,
-#                 "luhn_valid": is_valid
-#             }
-
-#             if imsi_data:
-#                 response_data["country"] = imsi_data.country
-#                 response_data["network"] = imsi_data.network
-#             else:
-#                 response_data["warning"] = "ICCID parsed but no matching IMSI record found."
-
-#             return Response(response_data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 
-# class ICCIDAnalysisAPIView(APIView):
-#     def post(self, request):
-#         iccid = request.data.get("iccid")
-
-#         if not iccid:
-#             return Response({"error": "ICCID is required."}, status=status.HTTP_400_BAD_REQUEST)
-
-#         if not iccid.isdigit() or not (19 <= len(iccid) <= 20):
-#             return Response({"error": "Invalid ICCID format. It should be a 19 or 20 digit numeric string."}, status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             mii = iccid[:2]
-#             check_digit = iccid[-1]
-
-#             country_name = None
-#             country_code = None
-#             network_operator = None
-#             network_code = None
-#             sequence_number = None
-
-#             imsi_data = None
-
-#             # --- Try to find using 3-digit MCC first ---
-#             possible_mcc = iccid[2:5]  # 3 digits
-#             possible_mnc = iccid[5:8]  # try 3-digit MNC
-#             imsi_data = IMSIRecord.objects.filter(mcc=int(possible_mcc), mnc=int(possible_mnc)).first()
-
-#             if not imsi_data:
-#                 # Try 3-digit MCC + 2-digit MNC
-#                 possible_mnc = iccid[5:7]
-#                 imsi_data = IMSIRecord.objects.filter(mcc=int(possible_mcc), mnc=int(possible_mnc)).first()
-
-#             if not imsi_data:
-#                 # Try 2-digit MCC
-#                 possible_mcc = iccid[2:4]  # 2 digits
-#                 possible_mnc = iccid[4:7]  # 3-digit MNC
-#                 imsi_data = IMSIRecord.objects.filter(mcc=int(possible_mcc), mnc=int(possible_mnc)).first()
-
-#             if not imsi_data:
-#                 # Try 2-digit MCC + 2-digit MNC
-#                 possible_mnc = iccid[4:6]
-#                 imsi_data = IMSIRecord.objects.filter(mcc=int(possible_mcc), mnc=int(possible_mnc)).first()
-
-#             if imsi_data:
-#                 country_name = imsi_data.country
-#                 country_code = imsi_data.country_code
-#                 network_operator = imsi_data.network
-#                 network_code = possible_mnc
-
-#                 # Calculate sequence number properly
-#                 sequence_start_index = 2 + len(possible_mcc) + len(possible_mnc)
-#                 sequence_number = iccid[sequence_start_index:-1]
-#             else:
-#                 return Response({"error": "No matching IMSI (MCC-MNC) record found in database."}, status=status.HTTP_404_NOT_FOUND)
-
-#             # Validate with Luhn
-#             is_valid = is_valid_luhn(iccid)
-
-#             response_data = {
-#                 "iccid": iccid,
-#                 "mii": mii,
-#                 "country_name": country_name,
-#                 "country_code": country_code,
-#                 "network_operator": network_operator,
-#                 "network_code": network_code,
-#                 "unique_number": sequence_number,
-#                 "check_digit": check_digit,
-#                 "luhn_valid": is_valid
-#             }
-
-#             return Response(response_data, status=status.HTTP_200_OK)
-
-#         except Exception as e:
-#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-import json
-import os
-from django.conf import settings
-
-json_path = os.path.join(settings.BASE_DIR, 'num_analysis_tools', 'extended_country_phone_codes.json')
-with open(json_path, 'r') as f:
-    PHONE_CODE_DATA = json.load(f)
 
 
 class ICCIDAnalysisAPIView(APIView):
@@ -390,46 +308,6 @@ class ICCIDAnalysisAPIView(APIView):
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-# class ManualMCCMNCEntryAPIView(APIView):
-#     def post(self, request):
-#         mcc = request.data.get("mcc")  # Mobile Country Code
-#         mnc = request.data.get("mnc")  # Mobile Network Code
-#         country = request.data.get("country")
-#         country_code = request.data.get("country_code")
-#         network = request.data.get("network")
-
-#         # Check required fields
-#         if not all([mcc, mnc, country, country_code, network]):
-#             return Response({"error": "All fields (mcc, mnc, country, country_code, network) are required."},
-#                             status=status.HTTP_400_BAD_REQUEST)
-
-#         try:
-#             # Check if entry already exists (optional)
-#             existing = IMSIRecord.objects.filter(mcc=mcc, mnc=mnc).first()
-#             if existing:
-#                 return Response({"error": "Entry with given MCC and MNC already exists."},
-#                                 status=status.HTTP_400_BAD_REQUEST)
-
-#             # Insert into table
-#             IMSIRecord.objects.create(
-#                 mcc=int(mcc),
-#                 mcc_int=int(mcc),
-#                 mnc=int(mnc),
-#                 mnc_int=int(mnc),
-#                 iso="",  
-#                 country=country,
-#                 country_code=int(country_code),
-#                 network=network,
-#                 Country_Code_add=int(country_code)  
-#             )
-
-#             return Response({"message": "MCC-MNC data inserted successfully."},
-#                             status=status.HTTP_201_CREATED)
-
-#         except Exception as e:
-#             return Response({"error": str(e)},
-#                             status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class ManualMCCMNCEntryAPIView(APIView):
