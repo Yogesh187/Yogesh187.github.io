@@ -22,7 +22,7 @@ const CountryCode = () => {
     return (
         <div className="container mt-5">
             <div className="card shadow p-4">
-                <h2 className="text-center mb-4">Country Codes</h2>
+                <h2 className="text-center mb-4">Country Code</h2>
                 <div className="input-group mb-3">
                     <input
                         type="text"
@@ -40,7 +40,7 @@ const CountryCode = () => {
                             <table className="table table-bordered table-striped">
                                 <thead className="table-dark text-center">
                                     <tr>
-                                        <th>Phone Code</th>
+                                        <th>Country Code</th>
                                         <th>Country Name</th>
                                         <th>ISO Code</th>
                                         <th>MCC</th>

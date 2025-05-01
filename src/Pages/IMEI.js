@@ -48,6 +48,7 @@ export const IMEIFinder = () => {
             className="form-control"
             placeholder="Enter Full IMEI Number or TAC Code"
             value={imei}
+            maxLength={15}
             onChange={(e) => setImei(e.target.value)}
           />
           <button className="btn btn-primary" onClick={handleSearch}>

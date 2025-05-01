@@ -38,6 +38,7 @@ export const IMSIFinder = () => {
             className="form-control"
             placeholder="Enter 15-digit IMSI number"
             value={imsi}
+            maxLength={15}
             onChange={(e) => setImsi(e.target.value)}
           />
           <button className="btn btn-primary" onClick={handleSearch}>

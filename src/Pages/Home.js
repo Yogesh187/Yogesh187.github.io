@@ -51,7 +51,7 @@ const HomePage = () => {
               Login
             </a>
           ) : (
-            <a href="/Pages/Tacfinder" className="btn btn-light btn-lg mt-3">
+            <a href="https://www.youtube.com/" className="btn btn-light btn-lg mt-3">
               Explore
             </a>
           )}

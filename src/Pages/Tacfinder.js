@@ -17,7 +17,7 @@ export const TacFinder = () => {
 
   const extractTAC = () => {
     if (imei.length !== 15) {
-      setTac("Invalid IMEI");
+      setTac("Invalid IMEI 234");
     } else {
       setTac(imei.substring(0, 8));
     }
@@ -45,10 +45,10 @@ export const TacFinder = () => {
         {tac && (
           <div
             className={`mt-3 alert ${
-              tac === "Invalid IMEI" ? "alert-danger" : "alert-success"
+              tac === "Invalid IMEI 234" ? "alert-danger" : "alert-success"
             }`}
           >
-            <strong>{tac === "Invalid IMEI" ? tac : `Your TAC Code:  ${tac}`}</strong>
+            <strong>{tac === "Invalid IMEI 234" ? tac : `Your TAC Code:  ${tac}`}</strong>
           </div>
         )}
       </div>
