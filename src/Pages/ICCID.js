@@ -30,7 +30,7 @@ export const ICCIDFinder = () => {
     } catch (err) {
       console.error(err);
       if (err.response?.status === 404) {
-        navigate("/Pages/createiccid");
+        navigate("http://127.0.0.1:8000/api/tools/analyze-iccid/");
       } else {
       setError(
         err.response?.data?.error || "Something went wrong. Please try again."

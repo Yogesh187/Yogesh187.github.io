@@ -21,7 +21,7 @@ import { LuhnCheck } from "./Pages/LuhnCheck";
 import CountryCode from "./Pages/CountryCode";
 import PhoneNumberFinder from "./Pages/PhoneNumberFind";
 import ProtectedRoute from "./Components/ProtectedRoute"; // Import the ProtectedRoute component
-import CreateICCID from "./Pages/createiccid";
+// import CreateICCID from "./Pages/createiccid";
 
 function App() {
   return (
@@ -37,7 +37,7 @@ function App() {
         <Route path="/Pages/IMEI" element={<ProtectedRoute element={<IMEIFinder />} />} />
         <Route path="/Pages/ICCID" element={<ProtectedRoute element={<ICCIDFinder />} />} />
         <Route path="/Pages/createimei" element={<ProtectedRoute element={<CreateIMEI />} />} />
-        <Route path="/Pages/createiccid" element={<ProtectedRoute element={<CreateICCID />} />} />
+        {/* <Route path="/Pages/createiccid" element={<ProtectedRoute element={<CreateICCID />} />} /> */}
         <Route path="/Pages/IMSI" element={<ProtectedRoute element={<IMSIFinder />} />} />
         <Route path="/Pages/SIM" element={<ProtectedRoute element={<SimFinder />} />} />
         <Route path="/Pages/Tacfinder" element={<ProtectedRoute element={<TacFinder />} />} />
