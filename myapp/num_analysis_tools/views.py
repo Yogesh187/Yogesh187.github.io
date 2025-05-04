@@ -16,6 +16,12 @@ with open(json_path, 'r') as f:
     PHONE_CODE_DATA = json.load(f)
 
 
+import json
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+import os
+
 class PhoneNumberAnalysisAPIView(APIView):
     def post(self, request):
         phone_number = request.data.get("phone_number")
@@ -24,46 +30,70 @@ class PhoneNumberAnalysisAPIView(APIView):
             return Response({"error": "Phone number is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            parsed_number = phonenumbers.parse(phone_number)
+            phone_number = phone_number.strip().replace("+", "")
+            parts = phone_number.split()
+            if len(parts) != 2:
+                return Response({"error": "Invalid phone number format. Use '<country_code> <10-digit-number>'"}, status=status.HTTP_400_BAD_REQUEST)
+
+            country_code, national_number = parts[0], parts[1]
+
+            if not (country_code.isdigit() and national_number.isdigit()):
+                return Response({"error": "Invalid phone number or country code."}, status=status.HTTP_400_BAD_REQUEST)
+
+            matched_mnc = None
+            matched_entry = None
+            json_success = False
+
+            # Attempt using local JSON
+            try:
+                json_path = os.path.join(os.path.dirname(__file__), 'extended_country_phone_codes.json')
+                with open(json_path, 'r') as f:
+                    mcc_mnc_data = json.load(f)
+
+                valid_mncs = [entry for entry in mcc_mnc_data if str(entry.get("country_code")) == country_code]
+
+                for entry in sorted(valid_mncs, key=lambda x: -len(x["mnc"])):
+                    mnc = entry["mnc"]
+                    if national_number.startswith(mnc):
+                        matched_mnc = mnc
+                        matched_entry = entry
+                        json_success = True
+                        break
+            except Exception as json_err:
+                # Log or handle JSON loading error (optional)
+                pass
+
+            # If JSON success, return response
+            if json_success and matched_entry:
+                sequence_number = national_number[len(matched_mnc):]
+                return Response({
+                    "phone_number": f"{country_code} {national_number}",
+                    "country": matched_entry["country"],
+                    "carrier": matched_entry["name"],
+                    "network_code": matched_mnc,
+                    "sequence_number": sequence_number
+                }, status=status.HTTP_200_OK)
+
+            # Fallback: use phonenumbers
+            parsed_number = phonenumbers.parse(f"+{country_code}{national_number}")
 
             if not phonenumbers.is_valid_number(parsed_number):
                 return Response({"error": "Invalid phone number."}, status=status.HTTP_400_BAD_REQUEST)
 
-            # Extract components
-            country = geocoder.description_for_number(parsed_number, "en")
-            carrier_name = carrier.name_for_number(parsed_number, "en")
-            national_number = str(parsed_number.national_number)
+            fallback_country = geocoder.description_for_number(parsed_number, "en")
+            fallback_carrier = carrier.name_for_number(parsed_number, "en")
 
-            network_code = national_number[:2]
-            sequence_number = national_number[2:]
-
-
-            valid_mncs = IMSIRecord.objects.filter(country=country).values_list('mnc', flat=True)
-
-            # Sort MNCs by length descending (to match longer codes first)
-            valid_mncs = sorted([str(mnc) for mnc in valid_mncs if mnc is not None], key=lambda x: -len(x))
-
-            network_code = None
-            sequence_number = None
-
-            # Try to match a valid MNC from the national number prefix
-            for mnc_candidate in valid_mncs:
-                if national_number.startswith(mnc_candidate):
-                    network_code = mnc_candidate
-                    sequence_number = national_number[len(mnc_candidate):]
-                    break
-
-            # If no match found
-            if not network_code:
-                return Response({"error": "No matching country_code and mnc found in DB for this phone number."}, status=status.HTTP_404_NOT_FOUND)
+            # Guess network code as first 3 digits (not always accurate)
+            fallback_network_code = national_number[:3]
+            fallback_sequence_number = national_number[3:]
 
             return Response({
-                "phone_number": phone_number,
-                "country": country,
-                "carrier": carrier_name,
-                "network_code": network_code,
-                "sequence_number": sequence_number
-            }, status=status.HTTP_200_OK)
+                "phone_number": f"{country_code} {national_number}",
+                "country": fallback_country or "Unknown",
+                "carrier": fallback_carrier or "Unknown",
+                "network_code": fallback_network_code,
+                "sequence_number": fallback_sequence_number
+            }, status=status.HTTP_206_PARTIAL_CONTENT)  # 206: partial success
 
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
