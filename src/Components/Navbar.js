@@ -271,7 +271,7 @@ function Navbar() {
               <ul className="dropdown-menu" aria-labelledby="phoneNumberDropdown">
                 <li>
                   <Link className="dropdown-item" to="/Pages/PhoneNumberFind">
-                    Mobile Number Analysis
+                    MSISDN
                   </Link>
                 </li>
                 <li>

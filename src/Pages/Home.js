@@ -45,7 +45,7 @@ const HomePage = () => {
       >
         <div>
           <h1 className="display-4">Phone Numbering Analyzer</h1>
-          <p className="lead">Dial into the details — your numbers have secrets!</p>
+          <p className="lead">PNA - By  Vignesh R. S.</p>
           {!isLoggedIn ? (
             <a href="/Login" className="btn btn-light btn-lg mt-3">
               Login
