@@ -40,7 +40,7 @@ const PhoneNumberFinder = () => {
     return (
         <div className="container mt-5">
             <div className="card shadow p-4">
-                <h2 className="text-center mb-4">Mobile Station International Subscriber Directory Number</h2>
+                <h2 className="text-center mb-4">MSISDN - Mobile Station International Subscriber Directory Number</h2>
 
                 {/* <div className="mb-3">
                     <input

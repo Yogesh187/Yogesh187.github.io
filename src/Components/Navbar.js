@@ -230,7 +230,7 @@ function Navbar() {
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark border-bottom">
       <div className="container-fluid">
         <Link className="navbar-brand fw-bold" to="/">
-        Phone Numbering Analyzer
+        Phone Numbering Analyser
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
           <span className="navbar-toggler-icon"></span>
