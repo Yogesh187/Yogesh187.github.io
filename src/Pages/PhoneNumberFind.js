@@ -470,7 +470,7 @@ const PhoneNumberAnalyzer = () => {
         type="text"
         value={input}
         onChange={(e) => setInput(e.target.value)}
-        placeholder="+91 9865624528"
+        placeholder="+91 9876543210"
         className="form-control mt-2"
       />
       <button onClick={handleAnalyze} className="btn btn-primary mt-3">
