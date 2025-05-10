@@ -1,0 +1,217 @@
+// import React, { useState } from "react";
+// import axios from "axios";
+// import "bootstrap/dist/css/bootstrap.min.css";
+
+// export const CreateIMEI = () => {
+//   const [tac, setTac] = useState("");
+//   const [brand, setBrand] = useState("");
+//   const [devices, setDevices] = useState("");
+//   const [message, setMessage] = useState("");
+//   const [error, setError] = useState("");
+
+//   const handleCreate = async () => {
+//     setMessage("");
+//     setError("");
+
+//     if (!tac || !brand || !devices) {
+//       setError("All fields (TAC, Brand, Devices) are required.");
+//       return;
+//     }
+
+//     try {
+//       const response = await axios.post("http://127.0.0.1:8000/api/tools/create-imei/", {
+//         tac: tac,
+//         brand: brand,
+//         devices: devices,
+//       });
+
+//       setMessage(response.data.message || "Record created successfully!");
+//       setTac("");
+//       setBrand("");
+//       setDevices("");
+//     } catch (err) {
+//       console.error(err);
+//       setError(
+//         err.response?.data?.error || "Something went wrong. Please try again."
+//       );
+//     }
+//   };
+
+//   return (
+//     <div className="container mt-5">
+//       <div className="card shadow p-4">
+//         <h2 className="text-center mb-4">Create IMEI Record</h2>
+
+//         <div className="mb-3">
+//           <label className="form-label">TAC Code </label>
+//           <input
+//             type="text"
+//             className="form-control"
+//             placeholder="Enter first 8 digits of IMEI"
+//             value={tac}
+//             maxLength={8}
+//             onChange={(e) => setTac(e.target.value)}
+//           />
+//         </div>
+
+//         <div className="mb-3">
+//           <label className="form-label">Device</label>
+//           <input
+//             type="text"
+//             className="form-control"
+//             placeholder="Enter Device Name"
+//             value={brand}
+//             onChange={(e) => setBrand(e.target.value)}
+//           />
+//         </div>
+
+//         <div className="mb-3">
+//           <label className="form-label">Model</label>
+//           <input
+//             type="text"
+//             className="form-control"
+//             placeholder="Enter Model Name"
+//             value={devices}
+//             onChange={(e) => setDevices(e.target.value)}
+//           />
+//         </div>
+
+//         <div className="text-center">
+//           <button className="btn btn-success" onClick={handleCreate}>
+//             Create Record
+//           </button>
+//         </div>
+
+//         {error && <div className="alert alert-danger text-center mt-3">{error}</div>}
+//         {message && <div className="alert alert-success text-center mt-3">{message}</div>}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default CreateIMEI;
+
+
+import React, { useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+export const CreateIMEI = () => {
+  const [tac, setTac] = useState("");
+  const [brand, setBrand] = useState("");
+  const [devices, setDevices] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const handleCreate = () => {
+    setMessage("");
+    setError("");
+
+    if (!tac || !brand || !devices) {
+      setError("All fields (TAC, Brand, Devices) are required.");
+      return;
+    }
+
+    // Deserialize existing data
+    let imeiData = JSON.parse(localStorage.getItem("imeiData")) || [];
+
+    // Check for duplicate TAC
+    const exists = imeiData.some((item) => item.tac === tac);
+    if (exists) {
+      setError("TAC already exists!");
+      return;
+    }
+
+    // Create new record
+    const newRecord = {
+      id: imeiData.length + 1,
+      tac,
+      brand,
+      devices,
+    };
+
+    // Add and serialize to localStorage
+    imeiData.push(newRecord);
+    localStorage.setItem("imeiData", JSON.stringify(imeiData));
+
+    setMessage("Record created and saved locally!");
+    setTac("");
+    setBrand("");
+    setDevices("");
+  };
+
+  const viewSavedData = () => {
+    const data = JSON.parse(localStorage.getItem("imeiData")) || [];
+    console.log("Saved IMEI Data:", data);
+    alert("Check the console for saved JSON data.");
+  };
+
+  const downloadJson = () => {
+    const data = localStorage.getItem("imeiData");
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "imei_data.json";
+    link.click();
+  };
+
+  return (
+    <div className="container mt-5">
+      <div className="card shadow p-4">
+        <h2 className="text-center mb-4">Create IMEI Record</h2>
+
+        <div className="mb-3">
+          <label className="form-label">TAC Code </label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter first 8 digits of IMEI"
+            value={tac}
+            maxLength={8}
+            onChange={(e) => setTac(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Device</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter Device Name"
+            value={brand}
+            onChange={(e) => setBrand(e.target.value)}
+          />
+        </div>
+
+        <div className="mb-3">
+          <label className="form-label">Model</label>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Enter Model Name"
+            value={devices}
+            onChange={(e) => setDevices(e.target.value)}
+          />
+        </div>
+
+        <div className="text-center">
+          <button className="btn btn-success me-2" onClick={handleCreate}>
+            Create Record
+          </button>
+          <button className="btn btn-info me-2" onClick={viewSavedData}>
+            View Saved Data
+          </button>
+          <button className="btn btn-primary" onClick={downloadJson}>
+            Download JSON
+          </button>
+        </div>
+
+        {error && <div className="alert alert-danger text-center mt-3">{error}</div>}
+        {message && <div className="alert alert-success text-center mt-3">{message}</div>}
+      </div>
+    </div>
+  );
+};
+
+export default CreateIMEI;
