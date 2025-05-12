@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/phonenumber-analysis/static/css/main.acc16e7b.css",
+    "main.js": "/phonenumber-analysis/static/js/main.5ecc976b.js",
+    "static/js/453.669b430a.chunk.js": "/phonenumber-analysis/static/js/453.669b430a.chunk.js",
+    "static/media/logo.svg": "/phonenumber-analysis/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "index.html": "/phonenumber-analysis/index.html",
+    "main.acc16e7b.css.map": "/phonenumber-analysis/static/css/main.acc16e7b.css.map",
+    "main.5ecc976b.js.map": "/phonenumber-analysis/static/js/main.5ecc976b.js.map",
+    "453.669b430a.chunk.js.map": "/phonenumber-analysis/static/js/453.669b430a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.acc16e7b.css",
+    "static/js/main.5ecc976b.js"
+  ]
+}
